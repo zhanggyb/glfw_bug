@@ -56,30 +56,31 @@ endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -p -pg")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -p -pg")
     endif()
     if(WITH_GPERFTOOLS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pg")
         set(LIBS ${LIBS} profiler)
     endif()
 endif()
 
 if(MSVC)
     # Force to always compile with W4
-    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    if(CMAKE_C_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
     else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W4")
     endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     # Update if necessary
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-long-long -pedantic")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+    #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wno-long-long -pedantic")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
 endif()
 
 # build glfw
-add_subdirectory(extern/glfw)
-include_directories(extern/glfw/include)
+add_subdirectory(glfw)
+include_directories(glfw/include)
+set(LIBS ${LIBS} glfw ${GLFW_LIBRARIES})
 
 if(OS_LINUX)
 #    set(LIBS ${LIBS} Xcursor)   # Xcursor missing in latest glfw3
